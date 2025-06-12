@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Web Page</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: Arial, sans-serif;
+        padding: 40px;
+        background-color: #f0f4f8;
+        display: flex;
+        justify-content: center;
+      }
+
+      .container {
+        width: 600px;
+      }
+
+      form {
+        background-color: #ffffff;
+        padding: 25px;
+        border-radius: 12px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+
+      h2 {
+        color: #333;
+        margin-bottom: 20px;
+        text-align: center;
+      }
+
+      textarea {
+        width: 100%;
+        height: 200px;
+        padding: 12px;
+        font-size: 16px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        resize: none;
+        margin-bottom: 15px;
+      }
+
+      button {
+        width: 100%;
+        padding: 12px;
+        font-size: 16px;
+        border: none;
+        background-color: #007bff;
+        color: white;
+        border-radius: 6px;
+        cursor: pointer;
+      }
+
+      button:hover {
+        background-color: #0056b3;
+      }
+
+      .score-card {
+        margin-top: 20px;
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+        text-align: center;
+      }
+
+      .score-card h3 {
+        margin-bottom: 10px;
+        color: #333;
+      }
+
+      .score {
+        font-size: 24px;
+        font-weight: bold;
+        color: #28a745;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <form id="textForm" action="#">
+        <h2>Input</h2>
+        <textarea
+          id="inputText"
+          placeholder="Type your text here..."
+        ></textarea>
+        <button type="submit">Submit Text</button>
+      </form>
+
+      <div class="score-card">
+        <h3>Readability Score</h3>
+        <div class="score">Score: -- / 100</div>
+        <div class="grade">Grade: --</div>
+        <p class="label">(Waiting for analysis...)</p>
+
+        <h4>Text Statistics</h4>
+        <ul class="stats">
+          <li>Paragraphs: --</li>
+          <li>Sentences: --</li>
+          <li>Words: --</li>
+          <li>Characters: --</li>
+          <li>Reading Time: -- seconds</li>
+          <li>Speaking Time: -- seconds</li>
+          <li>Avg. Word Length: --</li>
+          <li>Avg. Sentence Length: --</li>
+          <li>Avg. Paragraph Length: --</li>
+        </ul>
+      </div>
+    </div>
+
+    <script>
+      document
+        .getElementById("textForm")
+        .addEventListener("submit", async function (e) {
+          e.preventDefault();
+
+          const userText = document.getElementById("inputText").value;
+
+          try {
+            const response = await fetch("http://localhost:3000/analyze", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({ text: userText }),
+            });
+
+            if (!response.ok) throw new Error("Network response was not OK");
+
+            const result = await response.json();
+
+            // Update score and grade
+            document.querySelector(".score").textContent =
+              "Score: " + result.score + " / 100";
+            document.querySelector(".grade").textContent =
+              "Grade: " + result.grade;
+            document.querySelector(".label").textContent = result.label;
+
+            // Update stats
+            const stats = result.stats;
+            const statsList = document.querySelector(".stats");
+            statsList.innerHTML = `
+            <li>Paragraphs: ${stats.paragraphs}</li>
+            <li>Sentences: ${stats.sentences}</li>
+            <li>Words: ${stats.words}</li>
+            <li>Characters: ${stats.characters}</li>
+            <li>Reading Time: ${stats.reading_time.toFixed(2)} seconds</li>
+            <li>Speaking Time: ${stats.speaking_time.toFixed(2)} seconds</li>
+            <li>Avg. Word Length: ${stats.avg_word_length.toFixed(2)}</li>
+            <li>Avg. Sentence Length: ${stats.avg_sentence_length.toFixed(
+              2
+            )}</li>
+            <li>Avg. Paragraph Length: ${stats.avg_paragraph_length.toFixed(
+              2
+            )}</li>
+          `;
+          } catch (error) {
+            console.error("Error:", error);
+            alert("Failed to get response from backend.");
+          }
+        });
+    </script>
+  </body>
+</html>
