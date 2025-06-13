@@ -42,7 +42,7 @@ It checks how easy or difficult your text is to read. After you enter your text 
 1. Run the backend server with:
 
 ```bash
-node backend.js
+node index.js
 ```
 
 ---
