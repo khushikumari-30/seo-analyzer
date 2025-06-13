@@ -37,7 +37,7 @@ It checks how easy or difficult your text is to read. After you enter your text 
 
 ---
 
-## How to Use It
+# How to Use It
 
 1. Run the backend server with:
 
