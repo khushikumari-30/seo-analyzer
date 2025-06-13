@@ -43,6 +43,7 @@ It checks how easy or difficult your text is to read. After you enter your text 
 
 ```bash
 node backend.js
+```
 
 ---
 
